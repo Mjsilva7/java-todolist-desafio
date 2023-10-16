@@ -21,12 +21,12 @@ public class UsuarioService {
         this.repositorio = repositorio;
     }
 
-    public List<UsuarioModel> todosUsuarios() {
-        return repositorio.findAll();
+    public List<UsuarioModel> listarUsuarios() {
+        return this.repositorio.findAll();
     }
 
-    public UsuarioModel getusuarioById(Long id) throws Exception {
-        return this.getusuarioById(id);
+    public UsuarioModel getUsuarioById(Long id) throws Exception {
+        return this.getUsuarioModelById(id);
     }
     
     public void salvarUsuario(UsuarioModel usuarioModel) throws Exception {
@@ -37,20 +37,20 @@ public class UsuarioService {
     }
 
     public UsuarioModel atualizarUsuario(UsuarioModel usuarioModel, Long id) throws Exception {
-        var usuario = this.getusuarioById(id);
+        var usuario = this.getUsuarioModelById(id);
         Utils.copyNonNullProperties(usuarioModel, usuario);
         var senhaHash = this.hashSenha(usuario.getSenha().toCharArray());
         usuario.setSenha(senhaHash);
-        return repositorio.save(usuario);
+        return this.repositorio.save(usuario);
     } 
 
     public void destruirUsuario(Long id) throws Exception {
-        this.getusuarioById(id);
+        this.getUsuarioModelById(id);
         this.repositorio.deleteById(id);
     }
 
     private UsuarioModel getUsuarioModelById(Long id) throws Exception {
-        var usuario = repositorio.findById(id).orElse(null);
+        var usuario = this.repositorio.findById(id).orElse(null);
         if(usuario == null) {
             throw new Exception("Usuário não cadastrado.");
 
@@ -59,7 +59,7 @@ public class UsuarioService {
     }
 
     private UsuarioModel checarUsername(String username) throws Exception {
-        var usuario = repositorio.findByUsername(username);
+        var usuario = this.repositorio.findByUsername(username);
         if(usuario != null) {
             throw new Exception("Usuário ja cadastrado.");
         }

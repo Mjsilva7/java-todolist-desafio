@@ -26,16 +26,16 @@ public class TarefaService {
         return tarefa;
     }
 
-    public void salvarTarefa(TarefaModel TarefaModel, Long idUsuario) throws Exception {
-        TarefaModel.setIdUsuario((Long) idUsuario);
-        this.checarData(TarefaModel);
-        this.repositorio.save(TarefaModel);
+    public void salvarTarefa(TarefaModel tarefaModel, Long idUsuario) throws Exception {
+        tarefaModel.setIdUsuario((Long) idUsuario);
+        this.checarData(tarefaModel);
+        this.repositorio.save(tarefaModel);
     }
 
-    public TarefaModel atualizarTarefa(TarefaModel TarefaModel, Long id, Long idUsuario) throws Exception {
+    public TarefaModel atualizarTarefa(TarefaModel tarefaModel, Long id, Long idUsuario) throws Exception {
         var tarefa = this.repositorio.findById(id).orElse(null);
         this.checarTarefaPorUsuario(tarefa, idUsuario);
-        Utils.copyNonNullProperties(TarefaModel, tarefa);
+        Utils.copyNonNullProperties(tarefaModel, tarefa);
         this.checarData(tarefa);
         return this.repositorio.save(tarefa);
     }
@@ -56,11 +56,11 @@ public class TarefaService {
     }
 
     private void checarData(TarefaModel TarefaModel) throws Exception {
-        var currentDate = LocalDateTime.now();
-        if (currentDate.isAfter(TarefaModel.getDataInicio())) {
+        var dataAtual = LocalDateTime.now();
+        if (dataAtual.isAfter(TarefaModel.getDataInicio())) {
             throw new Exception("A data de início não pode ser menor que a data atual.");
         }
-        if (currentDate.isAfter(TarefaModel.getDataFim())) {
+        if (dataAtual.isAfter(TarefaModel.getDataFim())) {
             throw new Exception("A data de término não pode ser menor que a data atual.");
         }
         if (TarefaModel.getDataInicio().isAfter(TarefaModel.getDataFim())) {
